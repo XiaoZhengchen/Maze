@@ -9,41 +9,43 @@ def update_show_range(gm_setting, screen, event, head):
     mid = (gm_setting.show_bottom - gm_setting.show_top) / 2
     mid_x = mid + gm_setting.show_top
     mid_y = mid + gm_setting.show_left
+    """
     print("head:" + str(head) + ',' + "mid:(" + str(mid_x),str(mid_y) + ")",end=",")
     print("left:" + str(gm_setting.show_left) + ",right:" + str(gm_setting.show_right) +
           ",top:" + str(gm_setting.show_top) + ",bottom:" + str(gm_setting.show_bottom))
-    if event.key == pygame.K_LEFT:
+    """
+    if event.key in [pygame.K_LEFT, pygame.K_a]:
         if head[1] == mid_y - 1 and gm_setting.show_left > 0:
             gm_setting.show_left -= 1
             gm_setting.show_right -= 1
-    elif event.key == pygame.K_RIGHT:
+    elif event.key in [pygame.K_RIGHT, pygame.K_d]:
         if head[1] == mid_y - 1 and gm_setting.show_right < 60:
             gm_setting.show_left += 1
             gm_setting.show_right += 1
-    elif event.key == pygame.K_UP:
+    elif event.key in [pygame.K_UP, pygame.K_w]:
         if head[0] == mid_x - 1 and gm_setting.show_top > 0:
             gm_setting.show_top -= 1
             gm_setting.show_bottom -= 1
-    elif event.key == pygame.K_DOWN:
+    elif event.key in [pygame.K_DOWN, pygame.K_s]:
         if head[0] == mid_x - 1 < 60 and gm_setting.show_bottom < 60:
             gm_setting.show_bottom += 1
             gm_setting.show_top += 1
 
 
 def check_keydown(screen, gm_setting, snake, maze, event):
-
+    """响应按键事件"""
     head = snake_head_get(snake, gm_setting)
 
-    if event.key == pygame.K_LEFT:
+    if event.key in [pygame.K_LEFT, pygame.K_a]:
         if snake.left(maze.m):
             update_show_range(gm_setting, screen, event, head)
-    elif event.key == pygame.K_RIGHT:
+    elif event.key in [pygame.K_RIGHT, pygame.K_d]:
         if snake.right(maze.m):
             update_show_range(gm_setting, screen, event, head)
-    elif event.key == pygame.K_UP:
+    elif event.key in [pygame.K_UP, pygame.K_w]:
         if snake.up(maze.m):
             update_show_range(gm_setting, screen, event, head)
-    elif event.key == pygame.K_DOWN:
+    elif event.key in [pygame.K_DOWN, pygame.K_s]:
         if snake.down(maze.m):
             update_show_range(gm_setting, screen, event, head)
 
@@ -130,7 +132,7 @@ def update_brick_group(gm_setting, bricks, maze):
 
 
 def check_show(gm_setting, brick):
-
+    """查看当前砖块是否在显示范围"""
     if (brick.pos[1] in range(gm_setting.show_left, gm_setting.show_right) and
                brick.pos[0] in range(gm_setting.show_top, gm_setting.show_bottom)):
         return True
@@ -139,6 +141,7 @@ def check_show(gm_setting, brick):
 
 
 def update_screen(screen, gm_setting, bricks, dir_button):
+
     # 颜色填充屏幕
     screen.fill(gm_setting.bg_color)
 

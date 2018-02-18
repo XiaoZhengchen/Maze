@@ -3,6 +3,7 @@ class Settings():
     包含所有的基本设置
     """
     def __init__(self):
+        """一些游戏开始时不会改变的静态设置"""
         # 设置窗口的高宽,背景色
         self.screen_width = 800
         self.screen_height = 600
@@ -47,4 +48,3 @@ class Settings():
         self.show_left = 0
         self.show_right = 20
         self.show_bottom = 20
-

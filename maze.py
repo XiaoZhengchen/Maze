@@ -6,6 +6,8 @@ import game_function as gf
 from createmaze import CreateMaze
 from directionButton import DirectionButton
 from snake import Snake
+from game_state import Gamestate
+from startActivity import StartActivity
 
 
 def run_game():
@@ -33,15 +35,25 @@ def run_game():
     snake = Snake(gm_setting)
     # 设置响应长按键的时间间隔
     pygame.key.set_repeat(100, 100)
+    # 实例化游戏状态
+    state = Gamestate()
+    # 实例化开始界面
+    start_page = StartActivity(screen, gm_setting)
+    # TODO 使用time库 使开始界面改为游戏开始时短时间出现
     while True:
         # 主循环
-
-        # 响应事件
-        gf.check_events(screen, gm_setting, snake, maze)
-        # 用操作后位置变换的蛇来更新迷宫矩阵
-        gf.update_maze(gm_setting, maze, snake, bricks)
-        # 更新屏幕
-        gf.update_screen(screen, gm_setting, bricks, dir_button)
+        if state.game_state:
+            # 进入游戏
+            # 响应事件
+            gf.check_events(screen, gm_setting, snake, maze)
+            # 用操作后位置变换的蛇来更新迷宫矩阵
+            gf.update_maze(gm_setting, maze, snake, bricks)
+            # 更新屏幕
+            gf.update_screen(screen, gm_setting, bricks, dir_button)
+        else:
+            # 响应事件
+            gf.check_events(screen, gm_setting, snake, maze)
+            start_page.show_page()
 
 
 run_game()
