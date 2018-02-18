@@ -31,6 +31,8 @@ def run_game():
     dir_button = DirectionButton(screen, gm_setting)
     # 实例化一条蛇
     snake = Snake(gm_setting)
+    # 设置响应长按键的时间间隔
+    pygame.key.set_repeat(100, 100)
     while True:
         # 主循环
 

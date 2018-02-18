@@ -3,6 +3,7 @@ import sys
 
 from brick import Brick
 
+
 def check_keydown(screen, gm_setting, snake, maze, event):
     if event.key == pygame.K_LEFT:
         snake.left(maze.m)
