@@ -25,6 +25,10 @@ class Brick(Sprite):
     def __str__(self):
         print(self.color, self.rect.right, self.rect.bottom)
 
-    def draw_brick(self):
-        # 左下角
+    def draw_brick(self, gm_setting):
+        #
+        i = self.pos[0]
+        j = self.pos[1]
+        self.rect.bottom = self.width * (i - gm_setting.show_top + 1)
+        self.rect.right = self.width * (j - gm_setting.show_left + 1)
         pygame.draw.rect(self.screen, self.color, self.rect)

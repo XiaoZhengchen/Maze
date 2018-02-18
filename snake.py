@@ -52,6 +52,8 @@ class Snake:
         if self.check_moved(self, m, head_x, head_y):
             # 更新头部位置
             self.head_update((head_x, head_y))
+            return True
+        return False
 
     def right(self, m):
         """控制蛇向右行走,m为迷宫数组"""
@@ -62,6 +64,8 @@ class Snake:
         if self.check_moved(self, m, head_x, head_y):
             # 更新头部位置
             self.head_update((head_x, head_y))
+            return True
+        return False
 
     def up(self, m):
         """控制蛇向上行走,m为迷宫数组"""
@@ -72,6 +76,8 @@ class Snake:
         if self.check_moved(self, m, head_x, head_y):
             # 更新头部位置
             self.head_update((head_x, head_y))
+            return True
+        return False
 
     def down(self, m):
         """控制蛇向下行走,m为迷宫数组"""
@@ -82,3 +88,5 @@ class Snake:
         if self.check_moved(self, m, head_x, head_y):
             # 更新头部位置
             self.head_update((head_x, head_y))
+            return True
+        return False

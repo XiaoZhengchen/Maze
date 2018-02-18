@@ -4,15 +4,49 @@ import sys
 from brick import Brick
 
 
-def check_keydown(screen, gm_setting, snake, maze, event):
+def update_show_range(gm_setting, screen, event, head):
+    # 更新显示的迷宫区域
+    mid = (gm_setting.show_bottom - gm_setting.show_top) / 2
+    mid_x = mid + gm_setting.show_top
+    mid_y = mid + gm_setting.show_left
+    print("head:" + str(head) + ',' + "mid:(" + str(mid_x),str(mid_y) + ")",end=",")
+    print("left:" + str(gm_setting.show_left) + ",right:" + str(gm_setting.show_right) +
+          ",top:" + str(gm_setting.show_top) + ",bottom:" + str(gm_setting.show_bottom))
     if event.key == pygame.K_LEFT:
-        snake.left(maze.m)
+        if head[1] == mid_y - 1 and gm_setting.show_left > 0:
+            gm_setting.show_left -= 1
+            gm_setting.show_right -= 1
     elif event.key == pygame.K_RIGHT:
-        snake.right(maze.m)
+        if head[1] == mid_y - 1 and gm_setting.show_right < 60:
+            gm_setting.show_left += 1
+            gm_setting.show_right += 1
     elif event.key == pygame.K_UP:
-        snake.up(maze.m)
+        if head[0] == mid_x - 1 and gm_setting.show_top > 0:
+            gm_setting.show_top -= 1
+            gm_setting.show_bottom -= 1
     elif event.key == pygame.K_DOWN:
-        snake.down(maze.m)
+        if head[0] == mid_x - 1 < 60 and gm_setting.show_bottom < 60:
+            gm_setting.show_bottom += 1
+            gm_setting.show_top += 1
+
+
+def check_keydown(screen, gm_setting, snake, maze, event):
+
+    head = snake_head_get(snake, gm_setting)
+
+    if event.key == pygame.K_LEFT:
+        if snake.left(maze.m):
+            update_show_range(gm_setting, screen, event, head)
+    elif event.key == pygame.K_RIGHT:
+        if snake.right(maze.m):
+            update_show_range(gm_setting, screen, event, head)
+    elif event.key == pygame.K_UP:
+        if snake.up(maze.m):
+            update_show_range(gm_setting, screen, event, head)
+    elif event.key == pygame.K_DOWN:
+        if snake.down(maze.m):
+            update_show_range(gm_setting, screen, event, head)
+
 
 def check_keyup(screen, gm_setting, snake, maze, event):
     return 0
@@ -95,14 +129,23 @@ def update_brick_group(gm_setting, bricks, maze):
         brick.color = gm_setting.maze_color[maze.m[x][y]]
 
 
+def check_show(gm_setting, brick):
+
+    if (brick.pos[1] in range(gm_setting.show_left, gm_setting.show_right) and
+               brick.pos[0] in range(gm_setting.show_top, gm_setting.show_bottom)):
+        return True
+    else:
+        return False
+
+
 def update_screen(screen, gm_setting, bricks, dir_button):
     # 颜色填充屏幕
     screen.fill(gm_setting.bg_color)
 
     # 绘制砖块
     for new_brick in bricks:
-        new_brick.draw_brick()
-        # if new_brick.color == gm_setting.
+        if check_show(gm_setting, new_brick):
+            new_brick.draw_brick(gm_setting)
     # 绘制方向键
     dir_button.blitme()
     # 更新屏幕

@@ -8,9 +8,13 @@ class Settings():
         self.screen_height = 600
         self.bg_color = (230, 230, 230)
 
+        # 设置迷宫范围
+        self.maze_width = 600
+        self.maze_height = 600
+
         # 设置砖块的高宽,颜色
-        self.brick_width = 10
-        self.brick_height = 10
+        self.brick_width = 30
+        self.brick_height = 30
         self.brick_color = (0, 0, 0)
 
         # 通道的颜色
@@ -38,4 +42,9 @@ class Settings():
             3: self.snake_head_color
         }
 
+        # 设置迷宫的显示范围
+        self.show_top = 0
+        self.show_left = 0
+        self.show_right = 20
+        self.show_bottom = 20
 
