@@ -1,4 +1,6 @@
 import pygame
+import time
+import sys
 
 from settings import Settings
 from pygame.sprite import Group
@@ -7,6 +9,7 @@ from createmaze import CreateMaze
 from directionButton import DirectionButton
 from snake import Snake
 from game_state import Gamestate
+from welcomeActivity import WelcomeActivity
 from startActivity import StartActivity
 
 
@@ -37,6 +40,10 @@ def run_game():
     pygame.key.set_repeat(100, 100)
     # 实例化游戏状态
     state = Gamestate()
+    # 实例化欢迎界面
+    welcome_page = WelcomeActivity(screen, gm_setting)
+    welcome_page.show_page()
+    time.sleep(2)
     # 实例化开始界面
     start_page = StartActivity(screen, gm_setting)
     # TODO 使用time库 使开始界面改为游戏开始时短时间出现
@@ -45,14 +52,14 @@ def run_game():
         if state.game_state:
             # 进入游戏
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page)
             # 用操作后位置变换的蛇来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks)
             # 更新屏幕
             gf.update_screen(screen, gm_setting, bricks, dir_button)
         else:
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page)
             start_page.show_page()
 
 

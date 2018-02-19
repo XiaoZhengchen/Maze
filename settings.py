@@ -1,4 +1,4 @@
-class Settings():
+class Settings:
     """
     包含所有的基本设置
     """

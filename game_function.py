@@ -54,15 +54,28 @@ def check_keyup(screen, gm_setting, snake, maze, event):
     return 0
 
 
-def check_events(screen, gm_setting, snake, maze):
+def check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y):
+    """检测鼠标点击事件"""
+    # 玩家单击play按钮开始游戏
+    button_clicked = start_page.gm_play_rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked:
+        state.game_state = True
+
+
+def check_events(screen, gm_setting, snake, maze, state, start_page):
     """响应按键事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            check_keydown(screen, gm_setting, snake, maze, event)
-        elif event.type == pygame.KEYUP:
-            check_keyup(screen, gm_setting, snake,maze,  event)
+        if state.game_state:
+            if event.type == pygame.KEYDOWN:
+                check_keydown(screen, gm_setting, snake, maze, event)
+            elif event.type == pygame.KEYUP:
+                check_keyup(screen, gm_setting, snake, maze,  event)
+        else:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
 
 
 def create_maze(screen, gm_setting, maze, bricks, i, j):
