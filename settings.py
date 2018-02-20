@@ -43,7 +43,7 @@ class Settings:
             3: self.snake_head_color
         }
 
-        # 设置迷宫的显示范围
+        # 设置迷宫的初始显示范围
         self.show_top = 0
         self.show_left = 0
         self.show_right = 20

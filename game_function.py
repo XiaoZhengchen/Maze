@@ -59,9 +59,9 @@ def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
     # 玩家单击play按钮开始游戏
     button_clicked = page.gm_play_rect.collidepoint(mouse_x, mouse_y)
     if button_clicked:
+        # 重置游戏状态
         state.gm_state = gm_setting.gm_run
-        state.restart(snake)
-        print("check_exit,state.gm_state=", state.gm_state)
+        state.restart(snake, gm_setting)
 
 
 def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
@@ -69,9 +69,9 @@ def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
     # 玩家单击exit按钮结束游戏
     button_clicked = page.gm_exit_rect.collidepoint(mouse_x, mouse_y)
     if button_clicked:
+        # 重置游戏状态
         state.gm_state = gm_setting.gm_wait
-
-        print("check_play,state.gm_state=", state.gm_state)
+        state.restart(snake, gm_setting)
 
 
 def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
@@ -101,6 +101,7 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
 def check_snake_out(screen, gm_setting, maze, snake, state):
     head = snake_head_get(snake, gm_setting)
     # if head[0] == len(maze.m) - 2 and head[1] == len(maze.m[1]) - 1:
+    # TODO 完成之后要修正判定条件
     if head[0] == 1 and head[1] == 1:
         state.gm_state = gm_setting.gm_end
 
