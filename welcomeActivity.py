@@ -4,7 +4,6 @@ import pygame.font
 
 class WelcomeActivity:
     """绘制欢迎界面的类"""
-    # TODO 使显示的字符居中
     def __init__(self, screen, gm_setting):
         self.screen = screen
         self.screen_rect = screen.get_rect()
@@ -41,13 +40,11 @@ class WelcomeActivity:
 
     def show_page(self):
         """展示页面"""
-
         self.screen.fill(self.bg_color, self.gm_name_rect)
         self.screen.blit(self.gm_name_image, self.gm_name_image_rect)
 
         self.screen.fill(self.bg_color, self.gm_auth_rect)
         self.screen.blit(self.gm_auth_image, self.gm_auth_image_rect)
-
         # 更新屏幕
         pygame.display.flip()
 

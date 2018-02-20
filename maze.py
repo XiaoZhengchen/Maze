@@ -11,6 +11,7 @@ from snake import Snake
 from game_state import Gamestate
 from welcomeActivity import WelcomeActivity
 from startActivity import StartActivity
+from endActivity import EndActivity
 
 
 def run_game():
@@ -39,28 +40,36 @@ def run_game():
     # 设置响应长按键的时间间隔
     pygame.key.set_repeat(100, 100)
     # 实例化游戏状态
-    state = Gamestate()
-    # 实例化欢迎界面
+    state = Gamestate(gm_setting)
+    # 实例化欢迎界面并显示欢迎界面2秒
     welcome_page = WelcomeActivity(screen, gm_setting)
     welcome_page.show_page()
-    time.sleep(2)
+    time.sleep(1)
     # 实例化开始界面
     start_page = StartActivity(screen, gm_setting)
-    # TODO 使用time库 使开始界面改为游戏开始时短时间出现
+    # 实例化结束页面
+    end_page = EndActivity(screen, gm_setting)
     while True:
         # 主循环
-        if state.game_state:
+        if state.gm_state == gm_setting.gm_run:
             # 进入游戏
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
             # 用操作后位置变换的蛇来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks)
+            # 检查蛇头是否已经成功逃出迷宫
+            gf.check_snake_out(screen, gm_setting, maze, snake, state)
+
             # 更新屏幕
             gf.update_screen(screen, gm_setting, bricks, dir_button)
-        else:
+        elif state.gm_state == gm_setting.gm_wait:
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
             start_page.show_page()
+        elif state.gm_state == gm_setting.gm_end:
+            # 响应事件
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
+            end_page.show_page()
 
 
 run_game()

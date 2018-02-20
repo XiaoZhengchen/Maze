@@ -54,28 +54,55 @@ def check_keyup(screen, gm_setting, snake, maze, event):
     return 0
 
 
-def check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y):
+def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
     """检测鼠标点击事件"""
     # 玩家单击play按钮开始游戏
-    button_clicked = start_page.gm_play_rect.collidepoint(mouse_x, mouse_y)
+    button_clicked = page.gm_play_rect.collidepoint(mouse_x, mouse_y)
     if button_clicked:
-        state.game_state = True
+        state.gm_state = gm_setting.gm_run
+        state.restart(snake)
+        print("check_exit,state.gm_state=", state.gm_state)
 
 
-def check_events(screen, gm_setting, snake, maze, state, start_page):
+def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
+    """检测鼠标点击事件"""
+    # 玩家单击exit按钮结束游戏
+    button_clicked = page.gm_exit_rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked:
+        state.gm_state = gm_setting.gm_wait
+
+        print("check_play,state.gm_state=", state.gm_state)
+
+
+def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
     """响应按键事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        if state.game_state:
+        if state.gm_state == gm_setting.gm_run:
+            # 开始游戏时需要响应的事件
             if event.type == pygame.KEYDOWN:
                 check_keydown(screen, gm_setting, snake, maze, event)
             elif event.type == pygame.KEYUP:
                 check_keyup(screen, gm_setting, snake, maze,  event)
-        else:
+        elif state.gm_state == gm_setting.gm_wait:
+            # 等待游戏开始时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
+        elif state.gm_state == gm_setting.gm_end:
+            # 游戏结束时需要响应的事件
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                check_play_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
+                check_exit_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
+
+
+def check_snake_out(screen, gm_setting, maze, snake, state):
+    head = snake_head_get(snake, gm_setting)
+    # if head[0] == len(maze.m) - 2 and head[1] == len(maze.m[1]) - 1:
+    if head[0] == 1 and head[1] == 1:
+        state.gm_state = gm_setting.gm_end
 
 
 def create_maze(screen, gm_setting, maze, bricks, i, j):

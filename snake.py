@@ -14,12 +14,15 @@ class Snake:
     @staticmethod
     def check_moved(self, m, x, y):
         # 判断这个移动是否合法
-        if m[x][y] == self.gm_setting.num_brick:
+        if y in range(len(m)):
+            if m[x][y] == self.gm_setting.num_brick:
+                return False
+            elif m[x][y] == self.gm_setting.num_snake:
+                return False
+            elif m[x][y] == self.gm_setting.num_road:
+                return True
+        else:
             return False
-        elif m[x][y] == self.gm_setting.num_snake:
-            return False
-        elif m[x][y] == self.gm_setting.num_road:
-            return True
 
     def head_update(self, head):
         if self.dir == self.gm_setting.snake_dir_right:
