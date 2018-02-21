@@ -1,5 +1,6 @@
 import pygame
 import sys
+import datetime
 
 from brick import Brick
 
@@ -61,7 +62,7 @@ def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
     if button_clicked:
         # 重置游戏状态
         state.gm_state = gm_setting.gm_run
-        state.restart(snake, gm_setting)
+        state.restart(snake, gm_setting, state)
 
 
 def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
@@ -172,6 +173,10 @@ def update_brick_group(gm_setting, bricks, maze):
         brick.color = gm_setting.maze_color[maze.m[x][y]]
 
 
+def update_score(score, state):
+    score.score = (state.gm_end_time - state.gm_start_time).seconds
+
+
 def check_show(gm_setting, brick):
     """查看当前砖块是否在显示范围"""
     if (brick.pos[1] in range(gm_setting.show_left, gm_setting.show_right) and
@@ -181,7 +186,7 @@ def check_show(gm_setting, brick):
         return False
 
 
-def update_screen(screen, gm_setting, bricks, dir_button):
+def update_screen(screen, gm_setting, bricks, dir_button, score):
 
     # 颜色填充屏幕
     screen.fill(gm_setting.bg_color)
@@ -192,6 +197,8 @@ def update_screen(screen, gm_setting, bricks, dir_button):
             new_brick.draw_brick(gm_setting)
     # 绘制方向键
     dir_button.blitme()
+    # 绘制分数
+    score.show_page()
     # 更新屏幕
     pygame.display.flip()
 

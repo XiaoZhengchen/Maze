@@ -1,7 +1,8 @@
 from collections import deque
+import datetime
 
 
-class Gamestate():
+class Gamestate:
     """记录游戏状态"""
     def __init__(self, gm_setting):
         self.gm_setting = gm_setting
@@ -9,9 +10,11 @@ class Gamestate():
         初始化游戏状态
         """
         self.gm_state = self.gm_setting.gm_wait
-        self.gm_score = 0
+        self.gm_start_time = datetime.datetime.now()
+        self.gm_end_time = datetime.datetime.now()
+        self.gm_score = (self.gm_end_time - self.gm_start_time).seconds
 
-    def restart(self, snake, gm_setting):
+    def restart(self, snake, gm_setting, state):
         # 重置蛇的位置以及长度
         snake.coordinate.clear()
         snake.coordinate = deque([(1, 0)])
@@ -20,4 +23,6 @@ class Gamestate():
         gm_setting.show_left = 0
         gm_setting.show_right = 20
         gm_setting.show_bottom = 20
-
+        # 重置游戏开始时间
+        state.gm_start_time = datetime.datetime.now()
+        state.gm_end_time = datetime.datetime.now()

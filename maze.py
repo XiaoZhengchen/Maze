@@ -1,7 +1,9 @@
+import datetime
 import pygame
 import time
 import sys
 
+from scorebored import ScoreBored
 from settings import Settings
 from pygame.sprite import Group
 import game_function as gf
@@ -41,6 +43,9 @@ def run_game():
     pygame.key.set_repeat(100, 100)
     # 实例化游戏状态
     state = Gamestate(gm_setting)
+    # 实例化分数
+    score = ScoreBored(screen, gm_setting, state)
+
     # 实例化欢迎界面并显示欢迎界面2秒
     welcome_page = WelcomeActivity(screen, gm_setting)
     welcome_page.show_page()
@@ -52,7 +57,10 @@ def run_game():
     while True:
         # 主循环
         if state.gm_state == gm_setting.gm_run:
-            # 进入游戏
+            # 进入游戏获取当前时间
+            state.gm_end_time = datetime.datetime.now()
+            # 更新分数
+            score.update_score(state)
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
             # 用操作后位置变换的蛇来更新迷宫矩阵
@@ -61,7 +69,7 @@ def run_game():
             gf.check_snake_out(screen, gm_setting, maze, snake, state)
 
             # 更新屏幕
-            gf.update_screen(screen, gm_setting, bricks, dir_button)
+            gf.update_screen(screen, gm_setting, bricks, dir_button, score)
         elif state.gm_state == gm_setting.gm_wait:
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
