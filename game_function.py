@@ -65,6 +65,14 @@ def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
         state.restart(snake, gm_setting, state)
 
 
+def check_rank_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
+    # 玩家单击Rank按钮查看排行榜
+    button_clicked = page.gm_rank_rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked:
+        # 重置游戏状态
+        state.gm_state = gm_setting.gm_rank
+
+
 def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
     """检测鼠标点击事件"""
     # 玩家单击exit按钮结束游戏
@@ -72,7 +80,7 @@ def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
     if button_clicked:
         # 重置游戏状态
         state.gm_state = gm_setting.gm_wait
-        state.restart(snake, gm_setting)
+        state.restart(snake, gm_setting, state)
 
 
 def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
@@ -91,20 +99,30 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
+                check_rank_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
         elif state.gm_state == gm_setting.gm_end:
             # 游戏结束时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 check_play_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
                 check_exit_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
+        elif state.gm_state == gm_setting.gm_rank:
+            # 排行榜界面响应esc键回到开始界面
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    state.gm_state = gm_setting.gm_wait
+                    print("gm_state:", end="")
+                    print(state.gm_state)
 
 
-def check_snake_out(screen, gm_setting, maze, snake, state):
+def check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score):
     head = snake_head_get(snake, gm_setting)
     # if head[0] == len(maze.m) - 2 and head[1] == len(maze.m[1]) - 1:
     # TODO 完成之后要修正判定条件
     if head[0] == 1 and head[1] == 1:
         state.gm_state = gm_setting.gm_end
+        # 更新排行榜
+        ranklist.update_rank(score.score)
 
 
 def create_maze(screen, gm_setting, maze, bricks, i, j):

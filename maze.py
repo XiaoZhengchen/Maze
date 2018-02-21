@@ -1,8 +1,8 @@
 import datetime
 import pygame
 import time
-import sys
 
+from ranklist import RankList
 from scorebored import ScoreBored
 from settings import Settings
 from pygame.sprite import Group
@@ -45,6 +45,8 @@ def run_game():
     state = Gamestate(gm_setting)
     # 实例化分数
     score = ScoreBored(screen, gm_setting, state)
+    # 实例化排行榜
+    ranklist = RankList(screen, gm_setting)
 
     # 实例化欢迎界面并显示欢迎界面2秒
     welcome_page = WelcomeActivity(screen, gm_setting)
@@ -61,12 +63,13 @@ def run_game():
             state.gm_end_time = datetime.datetime.now()
             # 更新分数
             score.update_score(state)
+
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
             # 用操作后位置变换的蛇来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks)
-            # 检查蛇头是否已经成功逃出迷宫
-            gf.check_snake_out(screen, gm_setting, maze, snake, state)
+            # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜
+            gf.check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score)
 
             # 更新屏幕
             gf.update_screen(screen, gm_setting, bricks, dir_button, score)
@@ -77,7 +80,12 @@ def run_game():
         elif state.gm_state == gm_setting.gm_end:
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
+
             end_page.show_page()
+        elif state.gm_state == gm_setting.gm_rank:
+            # 响应事件
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
+            ranklist.show_page()
 
 
 run_game()
