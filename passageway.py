@@ -1,9 +1,6 @@
 import sys
 from collections import deque
 
-from createmaze import CreateMaze
-from settings import Settings
-
 
 class PassageWay:
     """生成迷宫通路self.path"""
