@@ -111,8 +111,6 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     state.gm_state = gm_setting.gm_wait
-                    print("gm_state:", end="")
-                    print(state.gm_state)
 
 
 def check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score):

@@ -14,6 +14,7 @@ from game_state import Gamestate
 from welcomeActivity import WelcomeActivity
 from startActivity import StartActivity
 from endActivity import EndActivity
+from passageway import PassageWay
 
 
 def run_game():
@@ -32,6 +33,9 @@ def run_game():
     maze = CreateMaze()
     # 生成迷宫
     maze.prim()
+    # 生成迷宫的答案
+    ans = PassageWay(gm_setting, maze.m)
+    ans.get_path()
     # 实例化砖块,创建基本迷宫编组
     bricks = Group()
     gf.create_maze_group(screen, gm_setting, maze, bricks)
@@ -48,7 +52,7 @@ def run_game():
     # 实例化排行榜
     ranklist = RankList(screen, gm_setting)
 
-    # 实例化欢迎界面并显示欢迎界面2秒
+    # 实例化欢迎界面并显示欢迎界面1秒
     welcome_page = WelcomeActivity(screen, gm_setting)
     welcome_page.show_page()
     time.sleep(1)
@@ -63,13 +67,6 @@ def run_game():
             state.gm_end_time = datetime.datetime.now()
             # 更新分数
             score.update_score(state)
-
-            # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page)
-            # 用操作后位置变换的蛇来更新迷宫矩阵
-            gf.update_maze(gm_setting, maze, snake, bricks)
-            # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜
-            gf.check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score)
 
             # 更新屏幕
             gf.update_screen(screen, gm_setting, bricks, dir_button, score)
