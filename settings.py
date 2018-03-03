@@ -20,27 +20,31 @@ class Settings:
 
         # 通道的颜色
         self.road_color = (255, 255, 255)
-
         # 蛇的颜色
         self.snake_color = (0, 255, 0)
         # 蛇头的颜色
         self.snake_head_color = (255, 0, 0)
+        # 答案的颜色
+        self.ans_color = (100, 186, 187)
+
         # 蛇的头在双端队列的方向
         self.snake_dir_left = 0
         self.snake_dir_right = 1
 
-        # m的值为0则为砖，为1则为通道，为2则为蛇
+        # m的值为0则为砖，为1则为通道，为2则为蛇，3为蛇头，4为通路
         self.num_brick = 0
         self.num_road = 1
         self.num_snake = 2
         self.num_snake_head = 3
+        self.num_ans = 4
 
         # 颜色与方块类型的对应
         self.maze_color = {
             0: self.brick_color,
             1: self.road_color,
             2: self.snake_color,
-            3: self.snake_head_color
+            3: self.snake_head_color,
+            4: self.ans_color
         }
 
         # 设置迷宫的初始显示范围

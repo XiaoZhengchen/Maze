@@ -18,8 +18,8 @@ class PassageWay:
             return True
         return False
 
-    def check_in_vis(self, x, y, flag=False):
-        if 0 < x < self.x and 0 <= y < self.y and self.vis[x][y] != 0:
+    def check_in_vis(self, x, y):
+        if 0 < x < self.x and 0 < y < self.y and self.vis[x][y] != 0:
             return True
         return False
 
@@ -47,29 +47,32 @@ class PassageWay:
                 if self.check_in_maze(next[0], next[1]):
                     queue.appendleft(next)
                     self.vis[next[0]][next[1]] = self.vis[now[0]][now[1]] + 1
-                if next[0] == self.x - 2 and next[1] == self.y - 1:
-                    step = max(self.vis[next[0]][next[1]], step)
-                    break
+                    if next[0] == self.x - 2 and next[1] == self.y - 1:
+                        step = max(self.vis[next[0]][next[1]], step)
+                        break
         self.maze = self.vis
+        """
         for line in self.vis:
             for num in line:
                 print("%4d"% num,end="")
             print()
         print("max step is:" + str(step))
+        """
 
     def dfs(self, now, dir):
-        next = [0, 0]
         for i in range(4):
-            x = next[0] = now[0] + dir[i][0]
-            y = next[1] = now[1] + dir[i][1]
-            if next == [1, 0]:
-                return
+            x = now[0] + dir[i][0]
+            y = now[1] + dir[i][1]
             if self.check_in_vis(x, y) and self.maze[x][y] < self.maze[now[0]][now[1]]:
-                self.path.append(next)
-                self.dfs(next, dir)
+                self.path.append([x, y])
+                if [x, y] == [1, 0]:
+                    return
+                self.dfs([x, y], dir)
+
 
     def get_path(self):
         """生成具体路径并将之从右到左存在列表path中"""
+        self.answer()
         self.path = []
         x = self.x - 2
         y = self.y - 1
@@ -82,6 +85,7 @@ class PassageWay:
         }
         self.path.append(now)
         self.dfs(now, dir)
+        self.path.reverse()
 
 
 

@@ -1,33 +1,47 @@
+import json
+
 import pygame
 import sys
-import datetime
 
 from brick import Brick
 
 
-def update_show_range(gm_setting, screen, event, head):
+def init(ranklist):
+    """
+    在游戏开始时运行，读取存档内容
+    :return:
+    """
+    try:
+        filename = "rank_file.json"
+        with open(filename) as rankfile:
+            ranklist.rank = json.load(rankfile)
+    except FileNotFoundError:
+        filename = "rank_file.json"
+        with open(filename, "w") as rankfile:
+            json.dump(0, rankfile)
+
+
+def update_show_range(gm_setting, screen, event, head, dir=False):
     # 更新显示的迷宫区域
+    """
+    :param dir: 用于判断更新的操作是通过按键还是鼠标点击发出
+    """
     mid = (gm_setting.show_bottom - gm_setting.show_top) / 2
     mid_x = mid + gm_setting.show_top
     mid_y = mid + gm_setting.show_left
-    """
-    print("head:" + str(head) + ',' + "mid:(" + str(mid_x),str(mid_y) + ")",end=",")
-    print("left:" + str(gm_setting.show_left) + ",right:" + str(gm_setting.show_right) +
-          ",top:" + str(gm_setting.show_top) + ",bottom:" + str(gm_setting.show_bottom))
-    """
-    if event.key in [pygame.K_LEFT, pygame.K_a]:
+    if dir or event.key in [pygame.K_LEFT, pygame.K_a]:
         if head[1] == mid_y - 1 and gm_setting.show_left > 0:
             gm_setting.show_left -= 1
             gm_setting.show_right -= 1
-    elif event.key in [pygame.K_RIGHT, pygame.K_d]:
+    elif dir or event.key in [pygame.K_RIGHT, pygame.K_d]:
         if head[1] == mid_y - 1 and gm_setting.show_right < 60:
             gm_setting.show_left += 1
             gm_setting.show_right += 1
-    elif event.key in [pygame.K_UP, pygame.K_w]:
+    elif dir or event.key in [pygame.K_UP, pygame.K_w]:
         if head[0] == mid_x - 1 and gm_setting.show_top > 0:
             gm_setting.show_top -= 1
             gm_setting.show_bottom -= 1
-    elif event.key in [pygame.K_DOWN, pygame.K_s]:
+    elif dir or event.key in [pygame.K_DOWN, pygame.K_s]:
         if head[0] == mid_x - 1 < 60 and gm_setting.show_bottom < 60:
             gm_setting.show_bottom += 1
             gm_setting.show_top += 1
@@ -61,8 +75,8 @@ def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
     button_clicked = page.gm_play_rect.collidepoint(mouse_x, mouse_y)
     if button_clicked:
         # 重置游戏状态
-        state.gm_state = gm_setting.gm_run
         state.restart(snake, gm_setting, state)
+        state.gm_state = gm_setting.gm_run
 
 
 def check_rank_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
@@ -83,17 +97,53 @@ def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
         state.restart(snake, gm_setting, state)
 
 
-def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
+def check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button):
+    """响应方向按键"""
+    head = snake_head_get(snake, gm_setting)
+    left_clicked = dir_button.leftRect.collidepoint(mouse_x, mouse_y)
+    up_clicked = dir_button.upRect.collidepoint(mouse_x, mouse_y)
+    right_clicked = dir_button.rightRect.collidepoint(mouse_x, mouse_y)
+    down_clicked = dir_button.downRect.collidepoint(mouse_x, mouse_y)
+    if left_clicked and snake.left(maze.m):
+            update_show_range(gm_setting, screen, event, head, True)
+    if right_clicked and snake.right(maze.m):
+            update_show_range(gm_setting, screen, event, head, True)
+    if up_clicked and snake.up(maze.m):
+            update_show_range(gm_setting, screen, event, head, True)
+    if down_clicked and snake.down(maze.m):
+            update_show_range(gm_setting, screen, event, head, True)
+
+
+def check_prop(ans_prop, mouse_x, mouse_y):
+    """响应道具的点击事件    """
+    prop_checked = ans_prop.prop_rect.collidepoint(mouse_x, mouse_y)
+    if prop_checked:
+        ans_prop.effect()
+
+
+def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, dir_button="", ans_prop=""):
     """响应按键事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            # 退出并存档
+            filename = "rank_file.json"
+            with open(filename, 'w') as rankfile:
+                json.dump(ranklist.rank, rankfile)
             sys.exit()
         if state.gm_state == gm_setting.gm_run:
-            # 开始游戏时需要响应的事件
+            # 开始游戏后需要响应的事件
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    state.gm_state = gm_setting.gm_wait
+                    return
                 check_keydown(screen, gm_setting, snake, maze, event)
             elif event.type == pygame.KEYUP:
                 check_keyup(screen, gm_setting, snake, maze,  event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button)
+                check_prop(ans_prop, mouse_x, mouse_y)
+
         elif state.gm_state == gm_setting.gm_wait:
             # 等待游戏开始时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -115,9 +165,7 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page):
 
 def check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score):
     head = snake_head_get(snake, gm_setting)
-    # if head[0] == len(maze.m) - 2 and head[1] == len(maze.m[1]) - 1:
-    # TODO 完成之后要修正判定条件
-    if head[0] == 1 and head[1] == 1:
+    if head[0] == len(maze.m) - 2 and head[1] == len(maze.m[1]) - 1:
         state.gm_state = gm_setting.gm_end
         # 更新排行榜
         ranklist.update_rank(score.score)
@@ -163,13 +211,19 @@ def snake_tail_get(snake, gm_setting):
     return tail
 
 
-def update_maze(gm_setting, maze, snake, bricks):
+def update_maze(gm_setting, maze, snake, bricks, state, ans=[]):
     """通过snake来更新maze的值"""
     # 首先先将maze中的snake初始化为空白的道路
     for x in range(len(maze.m)):
         for y in range(len(maze.m[x])):
             if maze.m[x][y] == gm_setting.num_snake or maze.m[x][y] == gm_setting.num_snake_head:
                 maze.m[x][y] = gm_setting.num_road
+
+    # 根据ans来更新矩阵
+    if state.show_ans:
+        # print("path:", ans)
+        for point in ans:
+            maze.m[point[0]][point[1]] = gm_setting.num_ans
 
     # 根据snake来更新maze的值
     for point in snake.coordinate:
@@ -202,7 +256,7 @@ def check_show(gm_setting, brick):
         return False
 
 
-def update_screen(screen, gm_setting, bricks, dir_button, score):
+def update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop):
 
     # 颜色填充屏幕
     screen.fill(gm_setting.bg_color)
@@ -211,6 +265,9 @@ def update_screen(screen, gm_setting, bricks, dir_button, score):
     for new_brick in bricks:
         if check_show(gm_setting, new_brick):
             new_brick.draw_brick(gm_setting)
+
+    # 绘制道具
+    ans_prop.show()
     # 绘制方向键
     dir_button.blitme()
     # 绘制分数

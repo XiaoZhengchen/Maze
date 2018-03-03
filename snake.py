@@ -21,6 +21,8 @@ class Snake:
                 return False
             elif m[x][y] == self.gm_setting.num_road:
                 return True
+            elif m[x][y] == self.gm_setting.num_ans:
+                return True
         else:
             return False
 

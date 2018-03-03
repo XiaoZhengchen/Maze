@@ -21,13 +21,16 @@ class RankList:
 
     def update_rank(self, score):
         self.rank.append(score)
-        self.rank.sort(reverse=True)
+        self.rank.sort(reverse=False)
 
     def show_page(self):
         num = -1
         self.screen.fill(self.gm_setting.bg_color)
-        print(self.rank)
+        # print(self.rank)
+        # self.rank.reverse()
         for score in self.rank:
+            if score == 0:
+                continue
             num += 1
             if num == 10:
                 break

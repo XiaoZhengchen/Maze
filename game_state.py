@@ -12,6 +12,7 @@ class Gamestate:
         self.gm_state = self.gm_setting.gm_wait
         self.gm_start_time = datetime.datetime.now()
         self.gm_end_time = datetime.datetime.now()
+        self.show_ans = True
         self.gm_score = (self.gm_end_time - self.gm_start_time).seconds
 
     def restart(self, snake, gm_setting, state):
@@ -26,3 +27,5 @@ class Gamestate:
         # 重置游戏开始时间
         state.gm_start_time = datetime.datetime.now()
         state.gm_end_time = datetime.datetime.now()
+        # 重置游戏状态
+        state.show_ans = False

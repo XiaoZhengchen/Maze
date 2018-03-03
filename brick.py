@@ -26,9 +26,9 @@ class Brick(Sprite):
         print(self.color, self.rect.right, self.rect.bottom)
 
     def draw_brick(self, gm_setting):
-        #
+        # 画出每一个单元格
         i = self.pos[0]
         j = self.pos[1]
-        self.rect.bottom = self.width * (i - gm_setting.show_top + 1)
-        self.rect.right = self.width * (j - gm_setting.show_left + 1)
+        self.rect.top = self.width * (i - gm_setting.show_top)
+        self.rect.left = self.width * (j - gm_setting.show_left)
         pygame.draw.rect(self.screen, self.color, self.rect)

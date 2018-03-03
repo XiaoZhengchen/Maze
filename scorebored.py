@@ -37,6 +37,7 @@ class ScoreBored:
 
     def show_page(self):
         """展示分数模块"""
+
         self.screen.fill(self.bg_color, self.score_rect)
         self.screen.blit(self.score_image, self.score_image_rect)
 
