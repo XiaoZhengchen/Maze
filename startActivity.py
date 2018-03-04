@@ -8,7 +8,7 @@ class StartActivity():
         self.screen_rect = screen.get_rect()
         self.gm_setting = gm_setting
 
-        self.bg_color = (0, 0, 255)
+        self.bg_color = (95, 135, 222)
         self.text_color = (255, 255, 255)
         # 设置每一个选项的长宽,字体大小及之间的空隙
         self.width = 440

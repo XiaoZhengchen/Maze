@@ -9,7 +9,7 @@ class Gamestate:
         """
         初始化游戏状态
         """
-        self.gm_state = self.gm_setting.gm_wait
+        self.gm_state = self.gm_setting.gm_welcome
         self.gm_start_time = datetime.datetime.now()
         self.gm_end_time = datetime.datetime.now()
         self.show_ans = True

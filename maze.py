@@ -2,7 +2,10 @@ import datetime
 import pygame
 import time
 
+import sys
+
 from ans_prop import AnsProp
+from fruits import Fruits
 from ranklist import RankList
 from scorebored import ScoreBored
 from settings import Settings
@@ -45,6 +48,9 @@ def run_game():
     dir_button = DirectionButton(screen, gm_setting)
     # 实例化一条蛇
     snake = Snake(gm_setting)
+    # 实例化果实障碍
+    fruits = Fruits(maze, ans.path)
+    print(fruits.pos)
     # 设置响应长按键的时间间隔
     pygame.key.set_repeat(100, 100)
     # 实例化游戏状态
@@ -56,10 +62,6 @@ def run_game():
     # 实例化各种道具
     ans_prop = AnsProp(screen, gm_setting, state)
 
-    # 实例化欢迎界面并显示欢迎界面1秒
-    welcome_page = WelcomeActivity(screen, gm_setting)
-    welcome_page.show_page()
-    time.sleep(1)
     # 实例化开始界面
     start_page = StartActivity(screen, gm_setting)
     # 实例化结束页面
@@ -69,15 +71,24 @@ def run_game():
     gf.init(ranklist)
     while True:
         # 主循环
-        if state.gm_state == gm_setting.gm_run:
+        if state.gm_state == gm_setting.gm_welcome:
+            # 实例化欢迎界面并显示欢迎界面1秒
+            welcome_page = WelcomeActivity(screen, gm_setting)
+            welcome_page.show_page()
+            for event in pygame.event.get():
+                if event.type in [pygame.KEYDOWN, pygame.MOUSEBUTTONDOWN]:
+                    state.gm_state = gm_setting.gm_wait
+                if event.type == pygame.QUIT:
+                    sys.exit()
+        elif state.gm_state == gm_setting.gm_run:
             # 进入游戏获取当前时间
             state.gm_end_time = datetime.datetime.now()
             # 更新分数
             score.update_score(state)
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, dir_button, ans_prop)
-            # 用操作后位置变换的蛇与通路来更新迷宫矩阵
-            gf.update_maze(gm_setting, maze, snake, bricks, state, ans.path)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits.pos, dir_button, ans_prop)
+            # 用操作后位置变换的蛇、通路、障碍果实来更新迷宫矩阵
+            gf.update_maze(gm_setting, maze, snake, bricks, state, fruits, ans.path)
             # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜
             gf.check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score)
 

@@ -9,7 +9,7 @@ class WelcomeActivity:
         self.screen_rect = screen.get_rect()
         self.gm_setting = gm_setting
 
-        self.bg_color = (0, 0, 255)
+        self.bg_color = (95, 135, 222)
         self.text_color = (255, 255, 255)
 
         # 需要展示的两个信息
@@ -40,6 +40,8 @@ class WelcomeActivity:
 
     def show_page(self):
         """展示页面"""
+        self.screen.fill(self.gm_setting.screen_color, self.screen_rect)
+
         self.screen.fill(self.bg_color, self.gm_name_rect)
         self.screen.blit(self.gm_name_image, self.gm_name_image_rect)
 

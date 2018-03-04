@@ -23,45 +23,33 @@ def init(ranklist):
 
 def update_show_range(gm_setting, screen, event, head, dir=False):
     # 更新显示的迷宫区域
-    """
-    :param dir: 用于判断更新的操作是通过按键还是鼠标点击发出
-    """
-    mid = (gm_setting.show_bottom - gm_setting.show_top) / 2
-    mid_x = mid + gm_setting.show_top
-    mid_y = mid + gm_setting.show_left
-    if dir or event.key in [pygame.K_LEFT, pygame.K_a]:
-        if head[1] == mid_y - 1 and gm_setting.show_left > 0:
-            gm_setting.show_left -= 1
-            gm_setting.show_right -= 1
-    elif dir or event.key in [pygame.K_RIGHT, pygame.K_d]:
-        if head[1] == mid_y - 1 and gm_setting.show_right < 60:
-            gm_setting.show_left += 1
-            gm_setting.show_right += 1
-    elif dir or event.key in [pygame.K_UP, pygame.K_w]:
-        if head[0] == mid_x - 1 and gm_setting.show_top > 0:
-            gm_setting.show_top -= 1
-            gm_setting.show_bottom -= 1
-    elif dir or event.key in [pygame.K_DOWN, pygame.K_s]:
-        if head[0] == mid_x - 1 < 60 and gm_setting.show_bottom < 60:
-            gm_setting.show_bottom += 1
-            gm_setting.show_top += 1
+    now_left = head[1] - 10
+    now_right = head[1] + 10
+    now_top = head[0] - 10
+    now_bottom = head[0] + 10
+    if 0 <= now_left <= 40:
+        gm_setting.show_left = now_left
+        gm_setting.show_right = now_right
+    if 0 <= now_top <= 40:
+        gm_setting.show_top = now_top
+        gm_setting.show_bottom = now_bottom
 
 
-def check_keydown(screen, gm_setting, snake, maze, event):
+def check_keydown(screen, gm_setting, snake, maze, event, fruits):
     """响应按键事件"""
     head = snake_head_get(snake, gm_setting)
 
     if event.key in [pygame.K_LEFT, pygame.K_a]:
-        if snake.left(maze.m):
+        if snake.left(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head)
     elif event.key in [pygame.K_RIGHT, pygame.K_d]:
-        if snake.right(maze.m):
+        if snake.right(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head)
     elif event.key in [pygame.K_UP, pygame.K_w]:
-        if snake.up(maze.m):
+        if snake.up(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head)
     elif event.key in [pygame.K_DOWN, pygame.K_s]:
-        if snake.down(maze.m):
+        if snake.down(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head)
 
 
@@ -97,20 +85,20 @@ def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
         state.restart(snake, gm_setting, state)
 
 
-def check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button):
+def check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits):
     """响应方向按键"""
     head = snake_head_get(snake, gm_setting)
     left_clicked = dir_button.leftRect.collidepoint(mouse_x, mouse_y)
     up_clicked = dir_button.upRect.collidepoint(mouse_x, mouse_y)
     right_clicked = dir_button.rightRect.collidepoint(mouse_x, mouse_y)
     down_clicked = dir_button.downRect.collidepoint(mouse_x, mouse_y)
-    if left_clicked and snake.left(maze.m):
+    if left_clicked and snake.left(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head, True)
-    if right_clicked and snake.right(maze.m):
+    if right_clicked and snake.right(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head, True)
-    if up_clicked and snake.up(maze.m):
+    if up_clicked and snake.up(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head, True)
-    if down_clicked and snake.down(maze.m):
+    if down_clicked and snake.down(maze.m, fruits):
             update_show_range(gm_setting, screen, event, head, True)
 
 
@@ -121,7 +109,7 @@ def check_prop(ans_prop, mouse_x, mouse_y):
         ans_prop.effect()
 
 
-def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, dir_button="", ans_prop=""):
+def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits="", dir_button="", ans_prop=""):
     """响应按键事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -136,12 +124,12 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, r
                 if event.key == pygame.K_ESCAPE:
                     state.gm_state = gm_setting.gm_wait
                     return
-                check_keydown(screen, gm_setting, snake, maze, event)
+                check_keydown(screen, gm_setting, snake, maze, event, fruits)
             elif event.type == pygame.KEYUP:
                 check_keyup(screen, gm_setting, snake, maze,  event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button)
+                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits)
                 check_prop(ans_prop, mouse_x, mouse_y)
 
         elif state.gm_state == gm_setting.gm_wait:
@@ -191,12 +179,14 @@ def create_maze_group(screen, gm_setting, maze, bricks):
 
 def snake_head_get(snake, gm_setting):
     # 获得蛇的头部坐标
-    if snake.len == 1:
+    if len(snake.coordinate) == 1:
         head = snake.coordinate[0]
-    elif snake.dir == gm_setting.snake_dir_right:
-        head = snake.coordinate[-1]
-    elif snake.dir == gm_setting.snake_dir_left:
-        head = snake.coordinate[0]
+    else:
+        if snake.dir == gm_setting.snake_dir_right:
+            head = snake.coordinate[-1]
+        elif snake.dir == gm_setting.snake_dir_left:
+            head = snake.coordinate[0]
+
     return head
 
 
@@ -211,12 +201,12 @@ def snake_tail_get(snake, gm_setting):
     return tail
 
 
-def update_maze(gm_setting, maze, snake, bricks, state, ans=[]):
+def update_maze(gm_setting, maze, snake, bricks, state, fruits, ans=[]):
     """通过snake来更新maze的值"""
     # 首先先将maze中的snake初始化为空白的道路
     for x in range(len(maze.m)):
         for y in range(len(maze.m[x])):
-            if maze.m[x][y] == gm_setting.num_snake or maze.m[x][y] == gm_setting.num_snake_head:
+            if maze.m[x][y] != gm_setting.num_brick:
                 maze.m[x][y] = gm_setting.num_road
 
     # 根据ans来更新矩阵
@@ -225,11 +215,20 @@ def update_maze(gm_setting, maze, snake, bricks, state, ans=[]):
         for point in ans:
             maze.m[point[0]][point[1]] = gm_setting.num_ans
 
+    for fruit in fruits.pos:
+        x = fruit[0]
+        y = fruit[1]
+        maze.m[x][y] = gm_setting.num_fruit
+
     # 根据snake来更新maze的值
+    # head = snake_head_get(snake, gm_setting)
+    head = snake.get_head()
     for point in snake.coordinate:
+        if point == head:
+            continue
         maze.m[point[0]][point[1]] = gm_setting.num_snake
 
-    head = snake_head_get(snake, gm_setting)
+
     maze.m[head[0]][head[1]] = gm_setting.num_snake_head
     # 因为maze改变了，所以对bricks的编组进行更新
     update_brick_group(gm_setting, bricks, maze)
