@@ -1,4 +1,4 @@
-from prop import Prop
+from mould.prop import Prop
 
 
 class AnsProp(Prop):

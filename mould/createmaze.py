@@ -28,14 +28,14 @@ class CreateMaze:
         num_rows = 20
         num_cols = 20
         M = [[[0 for num in range(5)] for row in range(num_rows)] for col in range(num_cols)]
-        # Set starting row and column
+        # 设置开始位置
         r = 0
         c = 0
-        history = [(r, c)]  # The history is the stack of visited locations
+        history = [(r, c)]  # 标记已经使用过的数组
         while history:
-            # random choose a candidata cell from the cell set histroy
+            # 从已使用过的数组中随机选出一个坐标点
             r, c = random.choice(history)
-            M[r][c][4] = 1  # designate this location as visited
+            M[r][c][4] = 1  # 标记改点已被打通
             history.remove((r, c))
             check = []
             # If the randomly chosen cell has multiple edges

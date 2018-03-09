@@ -31,8 +31,8 @@ class Snake:
 
     def head_update(self, head, fruits):
         flag = True
-        if head in fruits:
-            fruits.remove(head)
+        if head in fruits.pos:
+            fruits.pos.remove(head)
             flag = False
         if self.dir == self.gm_setting.snake_dir_right:
             self.coordinate.append(head)

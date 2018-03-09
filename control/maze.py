@@ -1,24 +1,23 @@
 import datetime
-import pygame
-import time
-
 import sys
 
-from ans_prop import AnsProp
-from fruits import Fruits
-from ranklist import RankList
-from scorebored import ScoreBored
-from settings import Settings
+import pygame
+from mould.directionButton import DirectionButton
+from control.game_state import Gamestate
 from pygame.sprite import Group
-import game_function as gf
-from createmaze import CreateMaze
-from directionButton import DirectionButton
-from snake import Snake
-from game_state import Gamestate
-from welcomeActivity import WelcomeActivity
-from startActivity import StartActivity
-from endActivity import EndActivity
-from passageway import PassageWay
+from view.startActivity import StartActivity
+from view.welcomeActivity import WelcomeActivity
+
+from control import game_function as gf
+from mould.ans_prop import AnsProp
+from mould.createmaze import CreateMaze
+from mould.fruits import Fruits
+from mould.passageway import PassageWay
+from mould.ranklist import RankList
+from mould.scorebored import ScoreBored
+from mould.snake import Snake
+from settings import Settings
+from view.endActivity import EndActivity
 
 
 def run_game():
@@ -86,7 +85,7 @@ def run_game():
             # 更新分数
             score.update_score(state)
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits.pos, dir_button, ans_prop)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits, dir_button, ans_prop)
             # 用操作后位置变换的蛇、通路、障碍果实来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks, state, fruits, ans.path)
             # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜
@@ -96,11 +95,11 @@ def run_game():
             gf.update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop)
         elif state.gm_state == gm_setting.gm_wait:
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
             start_page.show_page()
         elif state.gm_state == gm_setting.gm_end:
             # 响应事件
-            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist)
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
 
             end_page.show_page()
         elif state.gm_state == gm_setting.gm_rank:

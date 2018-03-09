@@ -15,7 +15,7 @@ class Gamestate:
         self.show_ans = True
         self.gm_score = (self.gm_end_time - self.gm_start_time).seconds
 
-    def restart(self, snake, gm_setting, state):
+    def restart(self, snake, gm_setting, state, fruits="", maze=""):
         # 重置蛇的位置以及长度
         snake.coordinate.clear()
         snake.coordinate = deque([(1, 0)])
@@ -29,3 +29,5 @@ class Gamestate:
         state.gm_end_time = datetime.datetime.now()
         # 重置游戏状态
         state.show_ans = False
+        if fruits != "":
+            fruits.update()

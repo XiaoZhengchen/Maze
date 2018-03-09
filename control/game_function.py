@@ -1,9 +1,9 @@
 import json
-
-import pygame
 import sys
 
-from brick import Brick
+import pygame
+
+from mould.brick import Brick
 
 
 def init(ranklist):
@@ -57,13 +57,13 @@ def check_keyup(screen, gm_setting, snake, maze, event):
     return 0
 
 
-def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
+def check_play_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y, fruits):
     """检测鼠标点击事件"""
     # 玩家单击play按钮开始游戏
     button_clicked = page.gm_play_rect.collidepoint(mouse_x, mouse_y)
     if button_clicked:
         # 重置游戏状态
-        state.restart(snake, gm_setting, state)
+        state.restart(snake, gm_setting, state, fruits, maze)
         state.gm_state = gm_setting.gm_run
 
 
@@ -129,20 +129,20 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, r
                 check_keyup(screen, gm_setting, snake, maze,  event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits)
+                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits.pos)
                 check_prop(ans_prop, mouse_x, mouse_y)
 
         elif state.gm_state == gm_setting.gm_wait:
             # 等待游戏开始时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
+                check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y, fruits)
                 check_rank_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
         elif state.gm_state == gm_setting.gm_end:
             # 游戏结束时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                check_play_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
+                check_play_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y, fruits)
                 check_exit_button(screen, gm_setting, snake, maze, state, end_page, mouse_x, mouse_y)
         elif state.gm_state == gm_setting.gm_rank:
             # 排行榜界面响应esc键回到开始界面
