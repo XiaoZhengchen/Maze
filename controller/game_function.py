@@ -3,13 +3,12 @@ import sys
 
 import pygame
 
-from mould.brick import Brick
+from model.brick import Brick
 
 
 def init(ranklist):
     """
     在游戏开始时运行，读取存档内容
-    :return:
     """
     try:
         filename = "rank_file.json"
@@ -129,7 +128,7 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, r
                 check_keyup(screen, gm_setting, snake, maze,  event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits.pos)
+                check_dir_button(screen, gm_setting, event, snake, maze, mouse_x, mouse_y, dir_button, fruits)
                 check_prop(ans_prop, mouse_x, mouse_y)
 
         elif state.gm_state == gm_setting.gm_wait:

@@ -2,20 +2,20 @@ import datetime
 import sys
 
 import pygame
-from mould.directionButton import DirectionButton
-from control.game_state import Gamestate
+from model.directionButton import DirectionButton
+from controller.game_state import Gamestate
 from pygame.sprite import Group
 from view.startActivity import StartActivity
 from view.welcomeActivity import WelcomeActivity
 
-from control import game_function as gf
-from mould.ans_prop import AnsProp
-from mould.createmaze import CreateMaze
-from mould.fruits import Fruits
-from mould.passageway import PassageWay
-from mould.ranklist import RankList
-from mould.scorebored import ScoreBored
-from mould.snake import Snake
+from controller import game_function as gf
+from model.ans_prop import AnsProp
+from model.createmaze import CreateMaze
+from model.fruits import Fruits
+from model.passageway import PassageWay
+from model.ranklist import RankList
+from model.scorebored import ScoreBored
+from model.snake import Snake
 from settings import Settings
 from view.endActivity import EndActivity
 
@@ -86,6 +86,8 @@ def run_game():
             score.update_score(state)
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits, dir_button, ans_prop)
+            # 使蛇的尾部每隔10秒就自增一格
+            snake.tail_update(state.gm_score, maze.m)
             # 用操作后位置变换的蛇、通路、障碍果实来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks, state, fruits, ans.path)
             # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜

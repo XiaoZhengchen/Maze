@@ -12,13 +12,14 @@ class Snake:
         self.dir = self.gm_setting.snake_dir_right
 
     @staticmethod
-    def check_moved(self, m, x, y):
+    def check_moved(self, m, x, y, flag=True):
         # 判断这个移动是否合法
-        if y in range(len(m)):
+        if y in range(len(m)) and x in range(len(m)):
             if m[x][y] == self.gm_setting.num_brick:
                 return False
             elif m[x][y] == self.gm_setting.num_snake:
-                self.dir *= -1
+                if flag:
+                    self.dir *= -1
                 return False
             elif m[x][y] == self.gm_setting.num_road:
                 return True
@@ -42,8 +43,26 @@ class Snake:
             self.coordinate.appendleft(head)
             if flag:
                 self.coordinate.pop()
-        print(self.coordinate,self.dir)
-        print(self.get_head())
+
+    def tail_update(self, score, m):
+        """尾自增"""
+        mov = {
+            0: [0, 1],
+            1: [0, -1],
+            2: [1, 0],
+            3: [-1, 0]
+        }
+        tail = self.get_tail(self.gm_setting)
+        if score % 10 == 0:
+            for i in range(4):
+                x = tail[0] + mov[i][0]
+                y = tail[1] + mov[i][0]
+                if self.check_moved(self, m, x, y, False):
+                    if self.dir == self.gm_setting.snake_dir_right:
+                        self.coordinate.appendleft([x, y])
+                    else:
+                        self.coordinate.append([x, y])
+        print(self.coordinate, self.dir)
 
     def get_head(self):
         self.len = len(self.coordinate)
@@ -59,6 +78,16 @@ class Snake:
                 # 双端队列的左边为头
                 head = self.coordinate[0]
         return head
+
+    def get_tail(self, gm_setting):
+        # 获得蛇的尾部坐标
+        if self.len == 1:
+            tail = self.coordinate[0]
+        elif self.dir == gm_setting.snake_dir_right:
+            tail = self.coordinate[0]
+        elif self.dir == gm_setting.snake_dir_left:
+            tail = self.coordinate[-1]
+        return tail
 
     def left(self, m, fruits):
         """控制蛇向左行走,m为迷宫数组"""

@@ -3,7 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$/../alien_invasion" />
     <content url="file://$MODULE_DIR$" />
-    <content url="file://$MODULE_DIR$/../../python/test" />
+    <content url="file://$MODULE_DIR$/../../python/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../python/test" isTestSource="false" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
