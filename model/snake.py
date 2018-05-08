@@ -10,8 +10,9 @@ class Snake:
         self.color = self.gm_setting.snake_color
         # 设置蛇的方向,便于操作双端队列,1头为右,0头为左
         self.dir = self.gm_setting.snake_dir_right
-
-    @staticmethod
+        # 标记已经被自增的长度值，因为每一帧的刷新次数高于一秒
+        self.Flag_Score = [0]
+        
     def check_moved(self, m, x, y, flag=True):
         # 判断这个移动是否合法
         if y in range(len(m)) and x in range(len(m)):
@@ -54,16 +55,23 @@ class Snake:
         }
         tail = self.get_tail(self.gm_setting)
         if score % 10 == 0:
-            for i in range(4):
-                x = tail[0] + mov[i][0]
-                y = tail[1] + mov[i][0]
-                if self.check_moved(self, m, x, y, False):
-                    if self.dir == self.gm_setting.snake_dir_right:
-                        self.coordinate.appendleft([x, y])
-                    else:
-                        self.coordinate.append([x, y])
-        print(self.coordinate, self.dir)
-
+            if score in self.Flag_Score:
+                pass
+            else:
+                print("score", score)
+                print("ScoreFlag", self.Flag_Score)
+                self.Flag_Score.append(score)
+                for i in range(4):
+                    x = tail[0] + mov[i][0]
+                    y = tail[1] + mov[i][1]
+                    if self.check_moved(m, x, y, False):
+                        if self.dir == self.gm_setting.snake_dir_right:
+                            self.coordinate.appendleft([x, y])
+                        else:
+                            self.coordinate.append([x, y])
+                        print(self.dir, self.coordinate)
+                        break
+        
     def get_head(self):
         self.len = len(self.coordinate)
         if self.len == 1:
@@ -95,7 +103,7 @@ class Snake:
         head_x = head[0]
         head_y = head[1]
         head_y -= 1
-        if self.check_moved(self, m, head_x, head_y):
+        if self.check_moved(m, head_x, head_y):
             # 更新头部位置
             self.head_update([head_x, head_y], fruits)
             return True
@@ -107,7 +115,7 @@ class Snake:
         head_x = head[0]
         head_y = head[1]
         head_y += 1
-        if self.check_moved(self, m, head_x, head_y):
+        if self.check_moved(m, head_x, head_y):
             # 更新头部位置
             self.head_update([head_x, head_y], fruits)
             return True
@@ -119,7 +127,7 @@ class Snake:
         head_x = head[0]
         head_y = head[1]
         head_x -= 1
-        if self.check_moved(self, m, head_x, head_y):
+        if self.check_moved(m, head_x, head_y):
             # 更新头部位置
             self.head_update([head_x, head_y], fruits)
             return True
@@ -131,7 +139,7 @@ class Snake:
         head_x = head[0]
         head_y = head[1]
         head_x += 1
-        if self.check_moved(self, m, head_x, head_y):
+        if self.check_moved(m, head_x, head_y):
             # 更新头部位置
             self.head_update([head_x, head_y], fruits)
             return True

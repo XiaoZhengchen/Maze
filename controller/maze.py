@@ -87,7 +87,7 @@ def run_game():
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits, dir_button, ans_prop)
             # 使蛇的尾部每隔10秒就自增一格
-            snake.tail_update(state.gm_score, maze.m)
+            snake.tail_update(score.score, maze.m)
             # 用操作后位置变换的蛇、通路、障碍果实来更新迷宫矩阵
             gf.update_maze(gm_setting, maze, snake, bricks, state, fruits, ans.path)
             # 检查蛇头是否已经成功逃出迷宫,若成功逃脱则更新排行榜
@@ -102,7 +102,6 @@ def run_game():
         elif state.gm_state == gm_setting.gm_end:
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
-
             end_page.show_page()
         elif state.gm_state == gm_setting.gm_rank:
             # 响应事件
