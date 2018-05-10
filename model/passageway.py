@@ -9,6 +9,7 @@ class PassageWay:
         self.x = len(m)    # 行
         self.y = len(m[1]) # 列
         self.gm_setting = gm_setting
+        self.level = 0
         self.maze = [[0 for row in range(self.y)]for line in range(self.x)]
         self.vis = [[0 for i in range(self.y)] for i in range(self.x)]
         sys.setrecursionlimit(3600)
@@ -51,13 +52,6 @@ class PassageWay:
                         step = max(self.vis[next[0]][next[1]], step)
                         break
         self.maze = self.vis
-        """
-        for line in self.vis:
-            for num in line:
-                print("%4d"% num,end="")
-            print()
-        print("max step is:" + str(step))
-        """
 
     def dfs(self, now, dir):
         for i in range(4):
@@ -68,7 +62,6 @@ class PassageWay:
                 if [x, y] == [1, 0]:
                     return
                 self.dfs([x, y], dir)
-
 
     def get_path(self):
         """生成具体路径并将之从右到左存在列表path中"""
@@ -87,7 +80,29 @@ class PassageWay:
         self.dfs(now, dir)
         self.path.reverse()
 
-
+    def get_level(self):
+        # 读取难度级别
+        dir = {
+            0: (0, 1),  # 右
+            1: (1, 0),  # 下
+            2: (0, -1),  # 左
+            3: (-1, 0),  # 上
+        }
+        print("x,y", self.x, self.y)
+        for x, y in self.path:
+            print(x, y)
+            branch = 0
+            for i in range(4):
+                nextx = x + dir[i][0]
+                nexty = y + dir[i][1]
+                print(nextx, nexty, end=",")
+                if 0 < nextx < self.x and 0 <= nexty < self.y:
+                    print(self.m[nextx][nexty])
+                    if self.m[nextx][nexty] == self.gm_setting.num_road:
+                        branch += 1
+            if branch > 2:
+                self.level += 1
+            print("")
 
 
 

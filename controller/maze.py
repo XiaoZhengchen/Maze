@@ -18,6 +18,7 @@ from model.scorebored import ScoreBored
 from model.snake import Snake
 from settings import Settings
 from view.endActivity import EndActivity
+from view.descriptionActivity import DescriptionActivity
 
 
 def run_game():
@@ -39,7 +40,8 @@ def run_game():
     # 生成迷宫的答案
     ans = PassageWay(gm_setting, maze.m)
     ans.get_path()
-    # print(ans.vis,"\n",ans.path)
+    ans.get_level()
+    print("ans.level", ans.level)
     # 实例化砖块,创建基本迷宫编组
     bricks = Group()
     gf.create_maze_group(screen, gm_setting, maze, bricks)
@@ -65,6 +67,8 @@ def run_game():
     start_page = StartActivity(screen, gm_setting)
     # 实例化结束页面
     end_page = EndActivity(screen, gm_setting)
+    # 实例化说明界面
+    description_page = DescriptionActivity(screen, gm_setting)
 
     # 读取存档
     gf.init(ranklist)
@@ -107,7 +111,10 @@ def run_game():
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist)
             ranklist.show_page()
-
+        elif state.gm_state == gm_setting.gm_descr:
+            # 响应事件
+            gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
+            description_page.show_page()
 
 run_game()
 

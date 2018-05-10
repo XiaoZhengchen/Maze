@@ -101,6 +101,7 @@ class Snake:
         """控制蛇向左行走,m为迷宫数组"""
         head = self.get_head()
         head_x = head[0]
+        
         head_y = head[1]
         head_y -= 1
         if self.check_moved(m, head_x, head_y):

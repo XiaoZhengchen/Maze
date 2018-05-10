@@ -59,9 +59,10 @@ class Settings:
         self.show_right = 20
         self.show_bottom = 20
 
-        # 设置游戏状态：0表示游戏未开始，1表示游戏进行中，2表示已游戏结束，3表示查看排行榜，4为欢迎界面
+        # 设置游戏状态：0表示游戏未开始，1表示游戏进行中，2表示已游戏结束，3表示查看排行榜，4为欢迎界面,5为查看说明界面
         self.gm_wait = 0
         self.gm_run = 1
         self.gm_end = 2
         self.gm_rank = 3
         self.gm_welcome = 4
+        self.gm_descr = 5

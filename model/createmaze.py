@@ -84,7 +84,6 @@ class CreateMaze:
                     M[r][c][3] = 1
                     r = r + 1
                     M[r][c][1] = 1
-
         # Open the walls at the start and finish
         M[0][0][0] = 1
         M[num_rows - 1][num_cols - 1][2] = 1

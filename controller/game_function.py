@@ -74,6 +74,14 @@ def check_rank_button(screen, gm_setting, snake, maze, state, page, mouse_x, mou
         state.gm_state = gm_setting.gm_rank
 
 
+def check_descr_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
+    # 玩家单击Description按钮查看说明
+    button_clicked = page.gm_description_rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked:
+        # 重置游戏状态
+        state.gm_state = gm_setting.gm_descr
+
+
 def check_exit_button(screen, gm_setting, snake, maze, state, page, mouse_x, mouse_y):
     """检测鼠标点击事件"""
     # 玩家单击exit按钮结束游戏
@@ -137,6 +145,7 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, r
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 check_play_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y, fruits)
                 check_rank_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
+                check_descr_button(screen, gm_setting, snake, maze, state, start_page, mouse_x, mouse_y)
         elif state.gm_state == gm_setting.gm_end:
             # 游戏结束时需要响应的事件
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -148,7 +157,11 @@ def check_events(screen, gm_setting, snake, maze, state, start_page, end_page, r
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     state.gm_state = gm_setting.gm_wait
-
+        elif state.gm_state == gm_setting.gm_descr:
+            # 说明界面响应esc键回到开始界面
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    state.gm_state = gm_setting.gm_wait
 
 def check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score):
     head = snake_head_get(snake, gm_setting)
