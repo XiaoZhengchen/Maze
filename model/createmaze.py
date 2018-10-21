@@ -35,11 +35,10 @@ class CreateMaze:
         while history:
             # 从已使用过的数组中随机选出一个坐标点
             r, c = random.choice(history)
-            M[r][c][4] = 1  # 标记改点已被打通
+            M[r][c][4] = 1  # 标记该点已被打通
             history.remove((r, c))
             check = []
-            # If the randomly chosen cell has multiple edges
-            # that connect it to the existing maze,
+            # 如果随机选择的单元格有多条边将它连接到已存在的迷宫
             if c > 0:
                 if M[r][c - 1][4] == 1:
                     check.append('L')

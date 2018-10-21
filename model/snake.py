@@ -47,6 +47,8 @@ class Snake:
 
     def tail_update(self, score, m):
         """尾自增"""
+        if len(self.coordinate) == 1:
+            return
         mov = {
             0: [0, 1],
             1: [0, -1],
@@ -58,8 +60,8 @@ class Snake:
             if score in self.Flag_Score:
                 pass
             else:
-                print("score", score)
-                print("ScoreFlag", self.Flag_Score)
+                # print("score", score)
+                # print("ScoreFlag", self.Flag_Score)
                 self.Flag_Score.append(score)
                 for i in range(4):
                     x = tail[0] + mov[i][0]
@@ -69,7 +71,7 @@ class Snake:
                             self.coordinate.appendleft([x, y])
                         else:
                             self.coordinate.append([x, y])
-                        print(self.dir, self.coordinate)
+                        # print(self.dir, self.coordinate)
                         break
         
     def get_head(self):

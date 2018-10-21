@@ -15,8 +15,10 @@ from model.fruits import Fruits
 from model.passageway import PassageWay
 from model.ranklist import RankList
 from model.scorebored import ScoreBored
+from model.levelboard import LevelBored
+from model.lenboard import LenBored
 from model.snake import Snake
-from settings import Settings
+from controller.settings import Settings
 from view.endActivity import EndActivity
 from view.descriptionActivity import DescriptionActivity
 
@@ -41,7 +43,7 @@ def run_game():
     ans = PassageWay(gm_setting, maze.m)
     ans.get_path()
     ans.get_level()
-    print("ans.level", ans.level)
+    # print("ans.level", ans.level)
     # 实例化砖块,创建基本迷宫编组
     bricks = Group()
     gf.create_maze_group(screen, gm_setting, maze, bricks)
@@ -51,13 +53,17 @@ def run_game():
     snake = Snake(gm_setting)
     # 实例化果实障碍
     fruits = Fruits(maze, ans.path)
-    print(fruits.pos)
+    # print(fruits.pos)
     # 设置响应长按键的时间间隔
     pygame.key.set_repeat(100, 100)
     # 实例化游戏状态
     state = Gamestate(gm_setting)
     # 实例化分数
     score = ScoreBored(screen, gm_setting, state)
+    # 实例化等级面板
+    level = LevelBored(screen, gm_setting, ans.level)
+    # 实例化长度面板
+    lenBoard = LenBored(screen, gm_setting, len(snake.coordinate))
     # 实例化排行榜
     ranklist = RankList(screen, gm_setting)
     # 实例化各种道具
@@ -86,8 +92,13 @@ def run_game():
         elif state.gm_state == gm_setting.gm_run:
             # 进入游戏获取当前时间
             state.gm_end_time = datetime.datetime.now()
+            ans.level = 0
+            ans.get_level()
+            level.update_level(ans.level)
             # 更新分数
             score.update_score(state)
+            # 更新长度
+            lenBoard.update_len(len(snake.coordinate))
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits, dir_button, ans_prop)
             # 使蛇的尾部每隔10秒就自增一格
@@ -98,12 +109,22 @@ def run_game():
             gf.check_snake_out(screen, gm_setting, maze, snake, state, ranklist, score)
 
             # 更新屏幕
-            gf.update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop)
+            gf.update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop, level, lenBoard)
         elif state.gm_state == gm_setting.gm_wait:
+            # 生成迷宫
+            maze.prim()
+            # 生成迷宫的答案
+            ans = PassageWay(gm_setting, maze.m)
+            ans.get_path()
+            ans.get_level()
+            fruits = Fruits(maze, ans.path)
+            snake.Flag_Score = []
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
             start_page.show_page()
         elif state.gm_state == gm_setting.gm_end:
+            snake.Flag_Score = []
+            
             # 响应事件
             gf.check_events(screen, gm_setting, snake, maze, state, start_page, end_page, ranklist, fruits)
             end_page.show_page()

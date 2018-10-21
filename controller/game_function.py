@@ -267,7 +267,7 @@ def check_show(gm_setting, brick):
         return False
 
 
-def update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop):
+def update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop, level, lenBoard):
 
     # 颜色填充屏幕
     screen.fill(gm_setting.bg_color)
@@ -283,6 +283,10 @@ def update_screen(screen, gm_setting, bricks, dir_button, score, ans_prop):
     dir_button.blitme()
     # 绘制分数
     score.show_page()
+    # 绘制等级
+    level.show_page()
+    # 绘制长度
+    lenBoard.show_page()
     # 更新屏幕
     pygame.display.flip()
 

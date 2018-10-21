@@ -88,16 +88,16 @@ class PassageWay:
             2: (0, -1),  # 左
             3: (-1, 0),  # 上
         }
-        print("x,y", self.x, self.y)
+        # print("x,y", self.x, self.y)
         for x, y in self.path:
-            print(x, y)
+            # print(x, y)
             branch = 0
             for i in range(4):
                 nextx = x + dir[i][0]
                 nexty = y + dir[i][1]
-                print(nextx, nexty, end=",")
+                # print(nextx, nexty, end=",")
                 if 0 < nextx < self.x and 0 <= nexty < self.y:
-                    print(self.m[nextx][nexty])
+                    # print(self.m[nextx][nexty])
                     if self.m[nextx][nexty] == self.gm_setting.num_road:
                         branch += 1
             if branch > 2:

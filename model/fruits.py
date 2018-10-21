@@ -11,3 +11,4 @@ class Fruits:
         self.pos = random.sample(self.ans, 10)
         # self.pos.append([1, 1])
         self.pos.reverse()
+        
